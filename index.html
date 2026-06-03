@@ -4,168 +4,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InvoiceForge | Logistics Invoice Processor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>InvoiceForge | Logistics Data Processor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg:           #f0f4f8;
-            --surface:      #ffffff;
-            --surface-2:    #f8fafc;
-            --border:       #e2e8f0;
-            --border-focus: #3b82f6;
-            --text-1:       #0f172a;
-            --text-2:       #475569;
-            --text-3:       #94a3b8;
-            --blue:         #2563eb;
-            --blue-light:   #eff6ff;
-            --blue-mid:     #bfdbfe;
-            --green:        #059669;
-            --green-light:  #ecfdf5;
-            --green-mid:    #a7f3d0;
-            --amber:        #d97706;
-            --amber-light:  #fffbeb;
-            --amber-mid:    #fde68a;
-            --red:          #dc2626;
-            --red-light:    #fef2f2;
-            --shadow-sm:    0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-            --shadow-md:    0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
-            --shadow-lg:    0 12px 32px rgba(0,0,0,.1), 0 4px 8px rgba(0,0,0,.05);
-            --radius:       12px;
-            --radius-sm:    8px;
-            --radius-lg:    16px;
+            --bg:          #111118;
+            --surface:     #1a1a24;
+            --surface-2:   #14141c;
+            --surface-3:   #0d0d14;
+            --border:      #2a2a3a;
+            --border-2:    #363650;
+            --accent:      #00e5a0;
+            --accent-dim:  rgba(0, 229, 160, 0.10);
+            --accent-glow: rgba(0, 229, 160, 0.22);
+            --text-1:      #f0f0f8;
+            --text-2:      #9090b0;
+            --text-3:      #52526a;
+            --red:         #ff5555;
+            --amber:       #ffb340;
+            --radius:      12px;
+            --radius-sm:   8px;
+            --radius-lg:   16px;
+            --shadow-sm:   0 1px 4px rgba(0,0,0,.5);
+            --shadow-md:   0 4px 18px rgba(0,0,0,.55);
+            --shadow-lg:   0 12px 44px rgba(0,0,0,.65);
         }
 
         body {
             background: var(--bg);
             color: var(--text-1);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 14px;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 15px;
             line-height: 1.6;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 32px 16px;
         }
 
-        /* ── Header ─────────────────────────────────────────────── */
-        .site-header {
-            width: 100%;
-            max-width: 720px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 28px;
+        /* ── Hero ──────────────────────────────────────────────── */
+        .hero {
+            padding: 80px 24px 68px;
+            text-align: center;
+            background: radial-gradient(ellipse 90% 55% at 50% -10%, rgba(0,229,160,.07) 0%, transparent 65%);
+            border-bottom: 1px solid var(--border);
         }
 
-        .logo { display: flex; align-items: center; gap: 10px; }
+        .hero-inner { max-width: 620px; margin: 0 auto; }
 
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--blue);
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-icon svg { display: block; }
-
-        .logo-name {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--text-1);
-            letter-spacing: -0.3px;
-        }
-
-        .logo-name span { color: var(--blue); }
-
-        .badge-version {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            color: var(--blue);
-            background: var(--blue-light);
-            border: 1px solid var(--blue-mid);
-            padding: 3px 9px;
-            border-radius: 99px;
-        }
-
-        /* ── Card ───────────────────────────────────────────────── */
-        .card {
-            width: 100%;
-            max-width: 720px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-        }
-
-        .card-body { padding: 32px; }
-
-        .section-label {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-            color: var(--text-3);
-            margin-bottom: 10px;
-        }
-
-        /* ── Mode Selector ──────────────────────────────────────── */
-        .mode-selector {
-            display: flex;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 4px;
-            margin-bottom: 24px;
-            gap: 4px;
-        }
-
-        .mode-btn {
-            flex: 1;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            color: var(--text-2);
-            transition: background .2s, color .2s, box-shadow .2s;
+        .brand {
             display: inline-flex;
             align-items: center;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 7px;
+            flex-shrink: 0;
+            box-shadow: 0 0 24px var(--accent-glow);
         }
 
-        .mode-btn:not(.active):hover {
+        .brand-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 42px;
             color: var(--text-1);
-            background: rgba(255,255,255,.6);
+            letter-spacing: -1.5px;
         }
 
-        .mode-btn.active {
+        .hero-tagline {
+            font-size: 18px;
+            color: var(--text-2);
+            font-weight: 300;
+            margin-bottom: 26px;
+            letter-spacing: 0.1px;
+        }
+
+        .hero-pills {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-pill {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent);
+            background: var(--accent-dim);
+            border: 1px solid rgba(0,229,160,.22);
+            padding: 5px 14px;
+            border-radius: 99px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ── How It Works ──────────────────────────────────────── */
+        .how-it-works {
+            padding: 60px 24px;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .section-heading {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .steps-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .steps-row { grid-template-columns: 1fr; }
+            .brand-name { font-size: 32px; }
+        }
+
+        .step-card {
             background: var(--surface);
-            box-shadow: var(--shadow-sm), 0 0 0 1px var(--border);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            box-shadow: var(--shadow-sm);
         }
 
-        .mode-btn[data-mode="store"].active   { color: var(--blue); }
-        .mode-btn[data-mode="3rdparty"].active { color: var(--amber); }
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: var(--accent);
+            color: #0a0a0a;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
 
-        /* ── Drop Zone ──────────────────────────────────────────── */
+        .step-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-1);
+            margin-bottom: 7px;
+        }
+
+        .step-desc {
+            font-size: 13px;
+            color: var(--text-2);
+            line-height: 1.55;
+        }
+
+        .step-desc code {
+            background: var(--surface-3);
+            border: 1px solid var(--border);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+        }
+
+        /* ── Main Content ──────────────────────────────────────── */
+        .main-content {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 24px 88px;
+        }
+
+        /* ── Tab Bar ──────────────────────────────────────────── */
+        .tab-bar {
+            display: flex;
+            gap: 2px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            padding: 13px 24px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-3);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: color .2s;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: transparent;
+            transition: background .2s;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .tab-btn:hover { color: var(--text-2); }
+
+        .tab-btn.active { color: var(--accent); }
+        .tab-btn.active::after { background: var(--accent); }
+
+        /* ── Card ──────────────────────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 32px;
+        }
+
+        /* ── Info Note ─────────────────────────────────────────── */
+        .info-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 16px;
+            background: rgba(0,229,160,.06);
+            border: 1px solid rgba(0,229,160,.16);
+            border-radius: var(--radius-sm);
+            margin-bottom: 28px;
+            font-size: 13px;
+            color: var(--accent);
+        }
+
+        .info-note svg { flex-shrink: 0; }
+
+        /* ── Drop Zone ─────────────────────────────────────────── */
         .drop-zone {
-            border: 1.5px dashed var(--border);
+            border: 1.5px dashed var(--border-2);
             border-radius: var(--radius);
-            padding: 44px 24px;
+            padding: 52px 24px;
             text-align: center;
             background: var(--surface-2);
             cursor: pointer;
@@ -175,66 +266,60 @@
 
         .drop-zone:hover,
         .drop-zone.drag-over {
-            border-color: var(--blue);
-            background: var(--blue-light);
-            box-shadow: 0 0 0 4px rgba(37,99,235,.07);
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            box-shadow: 0 0 0 4px var(--accent-glow);
         }
 
         .drop-zone.has-file {
             border-style: solid;
-            border-color: var(--green);
-            background: var(--green-light);
+            border-color: var(--accent);
+            background: rgba(0,229,160,.05);
         }
 
-        .drop-zone.has-file:hover { box-shadow: 0 0 0 4px rgba(5,150,105,.07); }
-
         .dz-icon {
-            width: 48px;
-            height: 48px;
-            margin: 0 auto 14px;
-            background: var(--blue-light);
-            border-radius: 12px;
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 16px;
+            background: rgba(0,229,160,.1);
+            border-radius: 13px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background .2s;
         }
 
-        .drop-zone.has-file .dz-icon { background: var(--green-light); }
-        .drop-zone.has-file .dz-icon svg { color: var(--green); }
-
-        .dz-title { font-size: 15px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+        .dz-title { font-size: 15px; font-weight: 500; color: var(--text-1); margin-bottom: 5px; }
         .dz-sub   { font-size: 13px; color: var(--text-2); }
 
         .dz-file-name {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-top: 10px;
+            margin-top: 12px;
             font-size: 12px;
             font-weight: 500;
-            color: var(--green);
-            background: var(--green-mid);
-            padding: 3px 10px;
+            color: var(--accent);
+            background: rgba(0,229,160,.12);
+            padding: 4px 12px;
             border-radius: 99px;
         }
 
-        /* ── Buttons ─────────────────────────────────────────────── */
-        .btn-row { display: flex; gap: 10px; margin-bottom: 24px; }
+        /* ── Buttons ──────────────────────────────────────────── */
+        .btn-row { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
 
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 7px;
-            padding: 11px 20px;
+            gap: 8px;
+            padding: 12px 22px;
             border-radius: var(--radius-sm);
-            font-size: 13px;
-            font-weight: 600;
-            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
             cursor: pointer;
             border: 1.5px solid transparent;
-            transition: background .15s, border-color .15s, box-shadow .15s, transform .1s;
+            transition: background .15s, transform .12s, box-shadow .15s;
             white-space: nowrap;
         }
 
@@ -242,142 +327,125 @@
 
         .btn-primary {
             flex: 1;
-            background: var(--blue);
-            color: #fff;
-            border-color: var(--blue);
-            box-shadow: 0 2px 6px rgba(37,99,235,.25);
+            background: var(--accent);
+            color: #0a0a0a;
+            border-color: var(--accent);
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,229,160,.22);
         }
 
         .btn-primary:hover:not(:disabled) {
-            background: #1d4ed8;
-            border-color: #1d4ed8;
-            box-shadow: 0 4px 12px rgba(37,99,235,.35);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 22px rgba(0,229,160,.32);
         }
 
         .btn-primary:disabled {
-            background: var(--border);
-            border-color: var(--border);
-            color: var(--text-3);
-            box-shadow: none;
+            opacity: 0.3;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .btn-outline {
-            flex: 1;
+            flex: 0 0 auto;
             background: transparent;
             color: var(--text-2);
-            border-color: var(--border);
+            border-color: var(--border-2);
         }
 
         .btn-outline:hover {
             background: var(--surface-2);
-            border-color: #cbd5e1;
             color: var(--text-1);
+            transform: translateY(-1px);
         }
 
-        /* ── Log Panel ──────────────────────────────────────────── */
+        .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+        /* ── Log Panel ─────────────────────────────────────────── */
         .log-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .log-indicator {
+        .log-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--text-3);
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-3);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            gap: 7px;
         }
 
         .log-dot {
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: var(--text-3);
+            flex-shrink: 0;
         }
 
         .log-dot.active {
-            background: var(--green);
-            animation: pulse 1.6s ease-in-out infinite;
+            background: var(--accent);
+            animation: pulse 1.4s ease-in-out infinite;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; }
-            50%       { opacity: 0.3; }
+            50%       { opacity: 0.25; }
         }
 
-        .btn-clear-log {
-            font-size: 11px;
-            font-weight: 500;
+        .btn-clear {
+            font-size: 12px;
+            font-weight: 400;
             color: var(--text-3);
             background: none;
             border: none;
             cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: inherit;
+            font-family: 'DM Sans', sans-serif;
+            padding: 3px 8px;
+            border-radius: 5px;
             transition: color .15s, background .15s;
         }
 
-        .btn-clear-log:hover { color: var(--text-2); background: var(--surface-2); }
+        .btn-clear:hover { color: var(--text-2); background: var(--surface-2); }
 
         .log-container {
-            background: #0f172a;
+            background: var(--surface-3);
+            border: 1px solid var(--border);
             border-radius: var(--radius-sm);
-            height: 240px;
+            height: 220px;
             overflow-y: auto;
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-family: 'Courier New', 'Fira Code', 'Consolas', monospace;
             font-size: 12px;
-            line-height: 1.7;
+            line-height: 1.75;
             padding: 14px 16px;
-            border: 1px solid #1e293b;
         }
 
-        .log-container::-webkit-scrollbar { width: 6px; }
+        .log-container::-webkit-scrollbar { width: 5px; }
         .log-container::-webkit-scrollbar-track { background: transparent; }
-        .log-container::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        .log-container::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
 
-        .log-line { display: flex; gap: 10px; }
-        .log-time { color: #475569; flex-shrink: 0; user-select: none; }
-        .log-msg-ready   { color: #64748b; }
-        .log-msg-info    { color: #93c5fd; }
-        .log-msg-success { color: #6ee7b7; }
-        .log-msg-warn    { color: #fcd34d; }
-        .log-msg-error   { color: #fca5a5; }
+        .log-line        { display: flex; gap: 10px; }
+        .log-time        { color: var(--text-3); flex-shrink: 0; user-select: none; }
+        .log-msg-ready   { color: var(--text-3); }
+        .log-msg-info    { color: #8ab4f8; }
+        .log-msg-success { color: var(--accent); }
+        .log-msg-warn    { color: var(--amber); }
+        .log-msg-error   { color: var(--red); }
 
-        /* ── Misc ────────────────────────────────────────────────── */
-        .divider { height: 1px; background: var(--border); margin: 28px 0; }
-
-        .info-strip {
+        /* ── Card foot ─────────────────────────────────────────── */
+        .card-foot {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: var(--blue-light);
-            border: 1px solid var(--blue-mid);
-            border-radius: var(--radius-sm);
-            margin-bottom: 24px;
-            font-size: 13px;
-            color: #1e40af;
-        }
-
-        .info-strip svg { flex-shrink: 0; }
-
-        .card-footer {
-            padding: 14px 32px;
-            background: var(--surface-2);
+            justify-content: flex-end;
+            margin-top: 22px;
+            padding-top: 20px;
             border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
-
-        .footer-text { font-size: 12px; color: var(--text-3); }
 
         .btn-instructions {
             display: inline-flex;
@@ -385,24 +453,24 @@
             gap: 5px;
             font-size: 12px;
             font-weight: 500;
-            color: var(--blue);
+            color: var(--accent);
             background: none;
             border: none;
             cursor: pointer;
-            font-family: inherit;
-            padding: 4px 6px;
-            border-radius: 5px;
+            font-family: 'DM Sans', sans-serif;
+            padding: 5px 9px;
+            border-radius: 6px;
             transition: background .15s;
         }
 
-        .btn-instructions:hover { background: var(--blue-light); }
+        .btn-instructions:hover { background: var(--accent-dim); }
 
-        /* ── Modal ──────────────────────────────────────────────── */
+        /* ── Modal ─────────────────────────────────────────────── */
         .modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(15,23,42,.5);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,.72);
+            backdrop-filter: blur(6px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -417,11 +485,12 @@
 
         .modal {
             background: var(--surface);
+            border: 1px solid var(--border-2);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
             width: 100%;
             max-width: 520px;
-            transform: translateY(12px);
+            transform: translateY(16px);
             transition: transform .25s cubic-bezier(.34,1.56,.64,1);
             overflow: hidden;
         }
@@ -436,7 +505,12 @@
             border-bottom: 1px solid var(--border);
         }
 
-        .modal-title { font-size: 16px; font-weight: 700; color: var(--text-1); }
+        .modal-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text-1);
+        }
 
         .modal-close {
             width: 28px;
@@ -449,34 +523,52 @@
             border-radius: 6px;
             cursor: pointer;
             color: var(--text-2);
-            transition: background .15s;
+            transition: background .15s, color .15s;
         }
 
-        .modal-close:hover { background: var(--border); }
+        .modal-close:hover { background: var(--border); color: var(--text-1); }
 
-        .modal-body { padding: 20px 24px 24px; }
+        .modal-body { padding: 20px 24px 28px; }
 
-        .steps { display: flex; flex-direction: column; gap: 16px; }
+        .modal-steps { display: flex; flex-direction: column; gap: 16px; }
 
-        .step { display: flex; gap: 14px; }
+        .modal-step { display: flex; gap: 14px; }
 
-        .step-num {
+        .modal-step-num {
             width: 26px;
             height: 26px;
             flex-shrink: 0;
-            background: var(--blue);
-            color: #fff;
+            background: var(--accent);
+            color: #0a0a0a;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: 'Syne', sans-serif;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
             margin-top: 1px;
         }
 
-        .step-text { font-size: 13px; color: var(--text-2); line-height: 1.6; }
-        .step-text strong { color: var(--text-1); font-weight: 600; }
+        .modal-step-text { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+        .modal-step-text strong { color: var(--text-1); font-weight: 600; }
+
+        /* ── Site Footer ──────────────────────────────────────── */
+        .site-footer {
+            text-align: center;
+            padding: 28px 24px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-3);
+        }
+
+        .site-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity .15s;
+        }
+
+        .site-footer a:hover { opacity: 0.75; }
 
         .hidden { display: none !important; }
     </style>
@@ -484,71 +576,85 @@
 
 <body>
 
-    <!-- ── Header ──────────────────────────────────────────────── -->
-    <header class="site-header">
-        <div class="logo">
-            <div class="logo-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                    <polyline points="10 9 9 9 8 9"/>
-                </svg>
+    <!-- ── Hero ─────────────────────────────────────────────────── -->
+    <header class="hero">
+        <div class="hero-inner">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                </div>
+                <h1 class="brand-name">InvoiceForge</h1>
             </div>
-            <span class="logo-name">Invoice<span>Forge</span></span>
+            <p class="hero-tagline">Logistics data, cleaned and grouped &mdash; automatically.</p>
+            <div class="hero-pills">
+                <span class="hero-pill">100% Browser-Based</span>
+                <span class="hero-pill">No Data Uploaded</span>
+            </div>
         </div>
-        <span class="badge-version">V1.0</span>
     </header>
 
-    <!-- ── Main Card ───────────────────────────────────────────── -->
-    <main class="card">
-        <div class="card-body">
+    <!-- ── How It Works ─────────────────────────────────────────── -->
+    <section class="how-it-works">
+        <p class="section-heading">How It Works</p>
+        <div class="steps-row">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <p class="step-title">Download Template</p>
+                <p class="step-desc">Get the correctly formatted <code>.xlsx</code> manifest template and fill in your delivery data using the provided column headers.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <p class="step-title">Upload Your Manifest</p>
+                <p class="step-desc">Drag and drop your filled manifest onto the upload zone, or click to browse. The log panel confirms when your file is loaded.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <p class="step-title">Download Processed Output</p>
+                <p class="step-desc">InvoiceForge groups, deduplicates, and formats your data automatically &mdash; download the ready-to-use Excel file.</p>
+            </div>
+        </div>
+    </section>
 
-            <!-- Info strip -->
-            <div class="info-strip">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- ── Main Content ──────────────────────────────────────────── -->
+    <div class="main-content">
+
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <button class="tab-btn active" data-mode="store">Store Deliveries</button>
+            <button class="tab-btn" data-mode="3rdparty">Partner Payouts</button>
+        </div>
+
+        <!-- Card -->
+        <div class="card">
+
+            <!-- Info note -->
+            <div class="info-note">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
-                All processing happens locally in your browser &mdash; no data is uploaded to any server.
-            </div>
-
-            <!-- Mode selector -->
-            <p class="section-label">Processing Mode</p>
-            <div class="mode-selector">
-                <button class="mode-btn active" data-mode="store">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
-                    </svg>
-                    Store Invoicing
-                </button>
-                <button class="mode-btn" data-mode="3rdparty">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="1" y="3" width="15" height="13"/>
-                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                        <circle cx="5.5" cy="18.5" r="2.5"/>
-                        <circle cx="18.5" cy="18.5" r="2.5"/>
-                    </svg>
-                    3rd-Party Invoicing
-                </button>
+                Your data never leaves your browser &mdash; all processing is 100% local.
             </div>
 
             <!-- Drop Zone -->
-            <p class="section-label">Upload Manifest</p>
             <div id="dropZone" class="drop-zone">
                 <div class="dz-icon">
-                    <svg id="dzIconDefault" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg id="dzIconDefault" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                         <polyline points="17 8 12 3 7 8"/>
                         <line x1="12" y1="3" x2="12" y2="15"/>
                     </svg>
-                    <svg id="dzIconDone" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg id="dzIconDone" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="20 6 9 17 4 12"/>
                     </svg>
                 </div>
                 <p class="dz-title" id="dzTitle">Drop your manifest file here</p>
-                <p class="dz-sub" id="dzSub">or click to browse &mdash; Excel (.xlsx, .xls) up to 50 MB</p>
+                <p class="dz-sub" id="dzSub">or click to browse &mdash; Excel (.xlsx) up to 50 MB</p>
                 <span class="dz-file-name hidden" id="dzFileName">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     <span id="dzFileNameText"></span>
@@ -576,13 +682,13 @@
 
             <div class="divider"></div>
 
-            <!-- Log -->
+            <!-- Log Panel -->
             <div class="log-header">
-                <div class="log-indicator">
+                <div class="log-label">
                     <div class="log-dot" id="logDot"></div>
                     Processing Log
                 </div>
-                <button class="btn-clear-log" id="clearLogBtn">Clear</button>
+                <button class="btn-clear" id="clearLogBtn">Clear</button>
             </div>
             <div id="log" class="log-container">
                 <div class="log-line">
@@ -591,20 +697,26 @@
                 </div>
             </div>
 
+            <!-- Instructions link -->
+            <div class="card-foot">
+                <button class="btn-instructions" id="infoBtn">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    Instructions
+                </button>
+            </div>
+
         </div>
+    </div>
 
-        <footer class="card-footer">
-            <span class="footer-text" id="footerText">InvoiceForge &mdash; Store Invoicing Processor</span>
-            <button class="btn-instructions" id="infoBtn">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                Instructions
-            </button>
-        </footer>
-    </main>
+    <!-- ── Site Footer ───────────────────────────────────────────── -->
+    <footer class="site-footer">
+        &copy; 2026 InvoiceForge &middot; Built by Jean-Luke Pieterse &middot;
+        <a href="https://glitchedfelix.github.io/Personal-Portfolio-Website/" target="_blank" rel="noopener">Portfolio</a>
+    </footer>
 
-    <!-- ── Instructions Modal ──────────────────────────────────── -->
+    <!-- ── Instructions Modal ───────────────────────────────────── -->
     <div id="overlay" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal">
             <div class="modal-header">
@@ -625,23 +737,21 @@
 
     const modeContent = {
         store: {
-            footer: 'InvoiceForge — Store Invoicing Processor',
-            intro: 'InvoiceForge will filter, organise, and group your store invoicing automatically.',
+            intro: 'InvoiceForge will filter, clean, and group your store delivery data automatically.',
             steps: [
-                ['Remove duplicate invoice numbers', 'from your source data before uploading. You will need to re-add them manually after the file is created.'],
+                ['Remove duplicate reference numbers', 'from your source data before uploading. You will need to re-add them manually after the file is created.'],
                 ['Upload your manifest file.', 'A template is available if you need the correct column structure — click <em>Download Template</em> to get it.'],
-                ['Click Generate Processed File.', 'The output will be split into separate tabs based on Sending Store for deliveries and Receiving Store for IBTs.'],
-                ['Review each tab', 'for Long Distance deliveries and IBTs before submitting for invoicing.']
+                ['Click Generate Processed File.', 'The output will be split into separate tabs based on Origin for standard deliveries and Receiving_Point for inter-branch transfers.'],
+                ['Review each tab', 'for long-distance deliveries and inter-branch transfers before submitting for invoicing.']
             ]
         },
         '3rdparty': {
-            footer: 'InvoiceForge — 3rd-Party Invoicing Processor',
-            intro: 'InvoiceForge will filter, organise, and group your 3rd-party invoicing automatically.',
+            intro: 'InvoiceForge will filter, clean, and group your partner payout data automatically.',
             steps: [
-                ['Remove duplicate invoice numbers', 'from your source data before uploading. You will need to re-add them manually after the file is created.'],
+                ['Remove duplicate reference numbers', 'from your source data before uploading. You will need to re-add them manually after the file is created.'],
                 ['Upload your manifest file.', 'A template is available if you need the correct column structure — click <em>Download Template</em> to get it.'],
-                ['Click Generate Processed File.', 'The output will be split into separate tabs based on the company names (Driver_Address) in your upload file.'],
-                ['Review each tab', 'for Long Distance deliveries and IBTs before submitting for invoicing.']
+                ['Click Generate Processed File.', 'The output will be split into separate tabs based on the Driver_Zone (delivery company) in your upload file.'],
+                ['Review each tab', 'for long-distance deliveries before submitting partner payouts.']
             ]
         }
     };
@@ -650,23 +760,22 @@
         const d = modeContent[mode];
         document.getElementById('modalBody').innerHTML = `
             <p style="font-size:13px;color:var(--text-2);margin-bottom:20px;">${d.intro}</p>
-            <div class="steps">
+            <div class="modal-steps">
                 ${d.steps.map((s, i) => `
-                <div class="step">
-                    <div class="step-num">${i + 1}</div>
-                    <p class="step-text"><strong>${s[0]}</strong> ${s[1]}</p>
+                <div class="modal-step">
+                    <div class="modal-step-num">${i + 1}</div>
+                    <p class="modal-step-text"><strong>${s[0]}</strong> ${s[1]}</p>
                 </div>`).join('')}
             </div>`;
     }
 
-    document.querySelectorAll('.mode-btn').forEach(btn => {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             if (btn.dataset.mode === activeMode) return;
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             activeMode = btn.dataset.mode;
-            document.getElementById('footerText').textContent = modeContent[activeMode].footer;
-            log(`Switched to ${activeMode === 'store' ? 'Store' : '3rd-Party'} Invoicing mode.`, 'info');
+            log(`Switched to ${activeMode === 'store' ? 'Store Deliveries' : 'Partner Payouts'} mode.`, 'info');
         });
     });
 
@@ -773,35 +882,35 @@
         else await process3rdParty();
     };
 
-    // ── Store mode processing ─────────────────────────────────────────────────
+    // ── Store Deliveries processing ───────────────────────────────────────────
     async function processStore() {
         processBtn.disabled = true;
         logDot.classList.add('active');
-        log("Step 1: Normalizing dates and cleaning IDs...");
+        log("Step 1: Normalising dates and cleaning references...");
 
         const seen = new Set();
         const cleanedData = [];
 
         rawData.forEach(row => {
-            const refSource = row.Shipper_Ref || row.External_ID || "";
-            const cleanID = String(refSource).replace(/\.0$/, "").trim();
+            const refSource = row.Reference || row.External_ID || "";
+            const cleanID   = String(refSource).replace(/\.0$/, "").trim();
             if (cleanID && !seen.has(cleanID)) {
                 seen.add(cleanID);
                 cleanedData.push({
                     ...row,
                     _internalID:     cleanID,
                     _isIBT:          cleanID.startsWith('46'),
-                    _shortDate:      formatToShortDate(row.Booking_Date),
-                    _tripID:         String(row.ID || ""),
-                    _dist:           parseFloat(row.Delivery_Distance || 0),
-                    _weight:         parseFloat(row.Delivery_Weight || 0),
+                    _shortDate:      formatToShortDate(row.Date),
+                    _orderID:        String(row.Order_ID || ""),
+                    _dist:           parseFloat(row.Distance_km || 0),
+                    _weight:         parseFloat(row.Weight_kg || 0),
                     _customer:       String(row.Customer || ""),
-                    _address:        String(row.To_Location || ""),
-                    _sendingStore:   String(row.Sending_Store || "Unknown").trim(),
-                    _receivingStore: String(row.Receiving_Store || "Unknown").trim(),
+                    _address:        String(row.Destination || ""),
+                    _origin:         String(row.Origin || "Unknown").trim(),
+                    _receivingPoint: String(row.Receiving_Point || "Unknown").trim(),
                     _storeKey:       cleanID.startsWith('46')
-                        ? String(row.Receiving_Store || "Unknown").trim()
-                        : String(row.Sending_Store || "Unknown").trim()
+                        ? String(row.Receiving_Point || "Unknown").trim()
+                        : String(row.Origin || "Unknown").trim()
                 });
             }
         });
@@ -827,7 +936,7 @@
 
                 if (p._shortDate === c._shortDate) {
                     if (!p._isIBT && !c._isIBT) {
-                        if (p._sendingStore && p._sendingStore === c._sendingStore) {
+                        if (p._origin && p._origin === c._origin) {
                             const cSim  = compareStrings(p._customer, c._customer);
                             const aSim  = compareStrings(p._address, c._address);
                             const dDiff = Math.abs(p._dist - c._dist);
@@ -835,15 +944,15 @@
                             else if (cSim > 0.88 && dDiff <= 10) { isMatch = true; matchType = "Name & Distance (Unable to match Addresses)"; }
                         }
                     } else if (p._isIBT && c._isIBT) {
-                        if (p._sendingStore === c._sendingStore && p._receivingStore === c._receivingStore) {
-                            isMatch = true; matchType = "match on Sending and Receiving StoreNames";
+                        if (p._origin === c._origin && p._receivingPoint === c._receivingPoint) {
+                            isMatch = true; matchType = "match on Origin and Receiving Point";
                         }
                     }
                 }
 
                 if (isMatch) {
                     group.subInvoices.push(c._internalID);
-                    group.subTrips.push(c._tripID);
+                    group.subTrips.push(c._orderID);
                     group.totalW += c._weight;
                     group.reason  = `Grouped via ${matchType}`;
                     group.confValue = 0.95;
@@ -866,19 +975,19 @@
         for (const storeKey of storeKeys) {
             const sheet = wb.addWorksheet(storeKey.substring(0, 31).replace(/[\[\]\*\?\/\\]/g, ""));
             sheet.columns = [
-                { header: 'Booking_Date',     key: 'h_date',   width: 15 },
-                { header: 'Shipper_Ref',       key: 'h_ref',    width: 15 },
-                { header: 'ID',                key: 'h_id',     width: 15 },
-                { header: 'Customer',          key: 'h_cust',   width: 25 },
-                { header: 'To_Location',       key: 'h_addr',   width: 35 },
-                { header: 'Sending_Store',     key: 'h_send',   width: 18 },
-                { header: 'Receiving_Store',   key: 'h_recv',   width: 18 },
-                { header: 'Delivery_Distance', key: 'h_dist',   width: 15 },
-                { header: 'Delivery_Weight',   key: 'h_weight', width: 15 },
-                { header: 'Grouped_invoice',   key: 'h_ginv',   width: 30 },
-                { header: 'Grouped_trip',      key: 'h_gtrip',  width: 30 },
-                { header: 'Confidence',        key: 'h_conf',   width: 12 },
-                { header: 'Reasoning',         key: 'h_reas',   width: 50 }
+                { header: 'Date',            key: 'h_date',   width: 15 },
+                { header: 'Reference',        key: 'h_ref',    width: 18 },
+                { header: 'Order_ID',         key: 'h_id',     width: 15 },
+                { header: 'Customer',         key: 'h_cust',   width: 25 },
+                { header: 'Destination',      key: 'h_addr',   width: 35 },
+                { header: 'Origin',           key: 'h_send',   width: 20 },
+                { header: 'Receiving_Point',  key: 'h_recv',   width: 20 },
+                { header: 'Distance_km',      key: 'h_dist',   width: 15 },
+                { header: 'Weight_kg',        key: 'h_weight', width: 15 },
+                { header: 'Grouped_invoice',  key: 'h_ginv',   width: 30 },
+                { header: 'Grouped_trip',     key: 'h_gtrip',  width: 30 },
+                { header: 'Confidence',       key: 'h_conf',   width: 12 },
+                { header: 'Reasoning',        key: 'h_reas',   width: 50 }
             ];
 
             const coData = groupedResults.filter(g => (g._storeKey || "Unknown") === storeKey);
@@ -890,11 +999,11 @@
             const mapRow = r => ({
                 h_date:   r._shortDate,
                 h_ref:    r._internalID,
-                h_id:     r._tripID,
+                h_id:     r._orderID,
                 h_cust:   r._customer,
                 h_addr:   r._address,
-                h_send:   r._sendingStore   || "",
-                h_recv:   r._receivingStore || "",
+                h_send:   r._origin         || "",
+                h_recv:   r._receivingPoint || "",
                 h_dist:   r._dist,
                 h_weight: r.totalW,
                 h_ginv:   r.subInvoices.length > 0 ? r.subInvoices.join(' // ') : "",
@@ -916,45 +1025,47 @@
         const buffer = await wb.xlsx.writeBuffer();
         const a = document.createElement("a");
         a.href = URL.createObjectURL(new Blob([buffer]));
-        a.download = `InvoiceForge_Store_Output.xlsx`;
+        a.download = `InvoiceForge_Output.xlsx`;
         a.click();
         log("Process complete — file downloaded.", 'success');
         logDot.classList.remove('active');
         processBtn.disabled = false;
     }
 
-    // ── 3rd-Party mode processing ─────────────────────────────────────────────
+    // ── Partner Payouts processing ────────────────────────────────────────────
     async function process3rdParty() {
         processBtn.disabled = true;
         logDot.classList.add('active');
-        log("Step 1: Normalising dates and cleaning IDs...");
+        log("Step 1: Normalising dates and cleaning references...");
 
         const seen = new Set();
         const cleanedData = [];
 
         rawData.forEach(row => {
-            const refSource = row.Shipper_Ref || row.External_ID || "";
+            const refSource = row.Reference || row.External_ID || "";
             const cleanID   = String(refSource).replace(/\.0$/, "").trim();
             if (cleanID && !seen.has(cleanID)) {
                 seen.add(cleanID);
                 cleanedData.push({
                     ...row,
-                    _internalID: cleanID,
-                    _isIBT:      cleanID.startsWith('46'),
-                    _shortDate:  formatToShortDate(row.Booking_Date),
-                    _tripID:     String(row.ID || ""),
-                    _dist:       parseFloat(row.Delivery_Distance || 0),
-                    _weight:     parseFloat(row.Delivery_Weight || 0),
-                    _customer:   String(row.Customer || ""),
-                    _address:    String(row.To_Location || ""),
-                    _driverAddr: String(row.Driver_Address || "Unassigned")
+                    _internalID:     cleanID,
+                    _isIBT:          cleanID.startsWith('46'),
+                    _shortDate:      formatToShortDate(row.Date),
+                    _orderID:        String(row.Order_ID || ""),
+                    _dist:           parseFloat(row.Distance_km || 0),
+                    _weight:         parseFloat(row.Weight_kg || 0),
+                    _customer:       String(row.Customer || ""),
+                    _address:        String(row.Destination || ""),
+                    _origin:         String(row.Origin || "Unknown").trim(),
+                    _receivingPoint: String(row.Receiving_Point || "Unknown").trim(),
+                    _driverZone:     String(row.Driver_Zone || "Unassigned")
                 });
             }
         });
 
-        cleanedData.sort((a, b) => a._driverAddr.localeCompare(b._driverAddr));
+        cleanedData.sort((a, b) => a._driverZone.localeCompare(b._driverZone));
 
-        log(`Step 2: Grouping ${cleanedData.length} records by company...`);
+        log(`Step 2: Grouping ${cleanedData.length} records by delivery company...`);
         const processedRefs = new Set();
         const groupedResults = [];
 
@@ -971,7 +1082,7 @@
 
                 let isMatch = false, matchType = "";
 
-                if (p._shortDate === c._shortDate && p._driverAddr === c._driverAddr) {
+                if (p._shortDate === c._shortDate && p._driverZone === c._driverZone) {
                     if (!p._isIBT && !c._isIBT) {
                         const cSim  = compareStrings(p._customer, c._customer);
                         const aSim  = compareStrings(p._address, c._address);
@@ -979,15 +1090,15 @@
                         if (cSim > 0.88 && aSim > 0.85)      { isMatch = true; matchType = "Name & Address"; }
                         else if (cSim > 0.88 && dDiff <= 10) { isMatch = true; matchType = "Name & Distance (Unable to match Addresses)"; }
                     } else if (p._isIBT && c._isIBT) {
-                        if (p.Sending_Store === c.Sending_Store && p.Receiving_Store === c.Receiving_Store) {
-                            isMatch = true; matchType = "match on Sending and Receiving StoreNames";
+                        if (p._origin === c._origin && p._receivingPoint === c._receivingPoint) {
+                            isMatch = true; matchType = "match on Origin and Receiving Point";
                         }
                     }
                 }
 
                 if (isMatch) {
                     group.subInvoices.push(c._internalID);
-                    group.subTrips.push(c._tripID);
+                    group.subTrips.push(c._orderID);
                     group.totalW += c._weight;
                     group.reason  = `Grouped via ${matchType}`;
                     group.confValue = 0.95;
@@ -1005,25 +1116,25 @@
         rawSheet.addRow(allHeaders);
         cleanedData.forEach(r => rawSheet.addRow(allHeaders.map(h => r[h])));
 
-        const companies = [...new Set(groupedResults.map(g => g._driverAddr))];
+        const companies = [...new Set(groupedResults.map(g => g._driverZone))];
 
         for (const company of companies) {
             const sheet = wb.addWorksheet(company.substring(0, 31).replace(/[\[\]\*\?\/\\]/g, ""));
             sheet.columns = [
-                { header: 'Booking_Date',     key: 'h_date',   width: 15 },
-                { header: 'Shipper_Ref',       key: 'h_ref',    width: 15 },
-                { header: 'ID',                key: 'h_id',     width: 15 },
-                { header: 'Customer',          key: 'h_cust',   width: 25 },
-                { header: 'To_Location',       key: 'h_addr',   width: 35 },
-                { header: 'Delivery_Distance', key: 'h_dist',   width: 15 },
-                { header: 'Delivery_Weight',   key: 'h_weight', width: 15 },
-                { header: 'Grouped_invoice',   key: 'h_ginv',   width: 30 },
-                { header: 'Grouped_trip',      key: 'h_gtrip',  width: 30 },
-                { header: 'Confidence',        key: 'h_conf',   width: 12 },
-                { header: 'Reasoning',         key: 'h_reas',   width: 50 }
+                { header: 'Date',            key: 'h_date',   width: 15 },
+                { header: 'Reference',        key: 'h_ref',    width: 18 },
+                { header: 'Order_ID',         key: 'h_id',     width: 15 },
+                { header: 'Customer',         key: 'h_cust',   width: 25 },
+                { header: 'Destination',      key: 'h_addr',   width: 35 },
+                { header: 'Distance_km',      key: 'h_dist',   width: 15 },
+                { header: 'Weight_kg',        key: 'h_weight', width: 15 },
+                { header: 'Grouped_invoice',  key: 'h_ginv',   width: 30 },
+                { header: 'Grouped_trip',     key: 'h_gtrip',  width: 30 },
+                { header: 'Confidence',       key: 'h_conf',   width: 12 },
+                { header: 'Reasoning',        key: 'h_reas',   width: 50 }
             ];
 
-            const coData = groupedResults.filter(g => g._driverAddr === company);
+            const coData = groupedResults.filter(g => g._driverZone === company);
             const d_le   = coData.filter(r => !r._isIBT && r._dist <= 150);
             const d_gt   = coData.filter(r => !r._isIBT && r._dist >  150);
             const i_le   = coData.filter(r =>  r._isIBT && r._dist <= 150);
@@ -1032,7 +1143,7 @@
             const mapRow = r => ({
                 h_date:   r._shortDate,
                 h_ref:    r._internalID,
-                h_id:     r._tripID,
+                h_id:     r._orderID,
                 h_cust:   r._customer,
                 h_addr:   r._address,
                 h_dist:   r._dist,
@@ -1056,41 +1167,41 @@
         const buffer = await wb.xlsx.writeBuffer();
         const a = document.createElement("a");
         a.href = URL.createObjectURL(new Blob([buffer]));
-        a.download = `InvoiceForge_3rdParty_Output.xlsx`;
+        a.download = `InvoiceForge_Output.xlsx`;
         a.click();
         log("Process complete — file downloaded.", 'success');
         logDot.classList.remove('active');
         processBtn.disabled = false;
     }
 
-    // ── Template ──────────────────────────────────────────────────────────────
+    // ── Template download ─────────────────────────────────────────────────────
     document.getElementById('templateBtn').onclick = async () => {
         const wb    = new ExcelJS.Workbook();
         const sheet = wb.addWorksheet('Manifest Template');
         sheet.columns = [
-            { header: 'Booking_Date',      key: 'a' },
-            { header: 'Shipper_Ref',       key: 'b' },
-            { header: 'ID',                key: 'c' },
-            { header: 'Customer',          key: 'd' },
-            { header: 'To_Location',       key: 'e' },
-            { header: 'Delivery_Distance', key: 'f' },
-            { header: 'Delivery_Weight',   key: 'g' },
-            { header: 'Sending_Store',     key: 'h' },
-            { header: 'Receiving_Store',   key: 'i' },
-            { header: 'Driver_Address',    key: 'j' }
+            { header: 'Date',            key: 'a' },
+            { header: 'Reference',       key: 'b' },
+            { header: 'Order_ID',        key: 'c' },
+            { header: 'Customer',        key: 'd' },
+            { header: 'Destination',     key: 'e' },
+            { header: 'Distance_km',     key: 'f' },
+            { header: 'Weight_kg',       key: 'g' },
+            { header: 'Origin',          key: 'h' },
+            { header: 'Receiving_Point', key: 'i' },
+            { header: 'Driver_Zone',     key: 'j' }
         ];
         const isStore = activeMode === 'store';
         sheet.addRow({
             a: new Date().toISOString().split('T')[0],
-            b: '2100000001',
-            c: '300001',
-            d: 'Sample Customer',
-            e: '123 Delivery Lane, Cape Town',
-            f: 10.5,
-            g: 2.5,
-            h: 'C526',
-            i: isStore ? 'C527' : '',
-            j: isStore ? 'Company name' : 'Third Party Carrier Ltd'
+            b: 'REF-001',
+            c: 'ORD-2026-001',
+            d: 'Acme Retail',
+            e: '12 Commerce Street, Johannesburg',
+            f: 45.5,
+            g: 12.0,
+            h: 'Pinnacle Stores - North Hub',
+            i: isStore ? 'BlueStar Depot East' : '',
+            j: isStore ? 'Pinnacle Stores - North Hub' : 'BlueStar Logistics'
         });
         sheet.getRow(1).font = { bold: true };
         const buffer = await wb.xlsx.writeBuffer();
